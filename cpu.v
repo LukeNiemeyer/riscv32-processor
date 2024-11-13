@@ -71,7 +71,6 @@ always @(*) begin
         end
     endcase
 end
-                       // ALU load
 
 regentry pc_reg (.D(next_pc), 
     		 .clk(clk), 
@@ -79,14 +78,9 @@ regentry pc_reg (.D(next_pc),
     		 .write_enable(pc_write_enable), 
     		 .Q(pc));
 
-memory2c imem(.data_out(inst_encoding), 
-	      .data_in(32'b0), 
-	      .addr(pc), 
-	      .enable(1'b1), 
-	      .wr(1'b0), 
-	      .createdump(1'b0), 
-	      .clk(clk), 
-	      .rst(rst));
+rom imem (.address(next_pc[11:2]),  // Adjust `next_pc` to match ROM address width
+    	  .clock(clk),
+    	  .q(inst_encoding));       // Output instruction encoding to CPU logic
 
 memory2c dmem (.data_out(data_mem_out), 
                .data_in(rf_out_1), 
